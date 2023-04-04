@@ -1,23 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Groups from './Groups';
+
 
 function App() {
+  const [groups, setGroups] = React.useState([])
+  const [selectedGroupId, setSelectedGroupId] = React.useState()
+
+  function addNewGroup() {
+    const newGroup = {
+      title: 'Untitled Group',
+      id: groups.length,
+    }
+    setGroups(prevGroups => [newGroup, ...prevGroups])
+    setSelectedGroupId(newGroup.id)
+  }
+
+  function selectGroup(id) {
+    setSelectedGroupId(id)
+  }
+
+  function deleteGroup(groupToRemove) {
+    setGroups(prevGroups => {
+      return prevGroups.filter(group => group !== groupToRemove)
+    })
+  }
+
+  function handleGroupChange(e, groupId) {
+    e.preventDefault();
+    setGroups(prevGroups => {
+      const groupToChange = prevGroups.find((group) => group.id === groupId)
+      groupToChange.title = e.target.value
+      return prevGroups
+    })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Groups
+        deleteGroup={deleteGroup}
+        setSelectedGroupId={selectGroup}
+        selectedGroupId={selectedGroupId}
+        addNewGroup={addNewGroup}
+        changeTitle={handleGroupChange}
+        groups={groups}
+      />
     </div>
   );
 }
