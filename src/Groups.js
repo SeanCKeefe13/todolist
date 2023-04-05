@@ -2,35 +2,54 @@ import React from "react"
 import List from "./List"
 
 export default function Groups(props) {
+    const [titleValue, setTitleValue] = React.useState('')
+
+    function addListItem(inputValue) {
+        const newListItem = {
+            value: inputValue,
+        }
+        props.onAddListItem(newListItem)
+    }
+
+    function handleChangeTitle(e, group) {
+        const value = e.currentTarget.value
+        props.onChangeTitle(group, value)
+    }
 
     function onKeyDown(e) {
         if (e.key === "Enter" || e.key === "Escape") {
             e.preventDefault()
-            props.setSelectedGroupId(null)
+            props.setSelectedGroup(null)
         }
     }
 
-
     const groupElements = props.groups.map((group) => {
-        return group.id === props.selectedGroupId ? (
+        return group === props.selectedGroup ? (
             <div className="groupContainer">
                 <div className="group">
                     <input
-                        key={group.id}
                         onKeyDown={onKeyDown}
-                        onChange={(e) => props.changeTitle(e, group.id)}
+                        onChange={(e) => handleChangeTitle(e, group)}
                     />
-                    <button onClick={() => props.setSelectedGroupId(null)}>save</button>
+                    <button onClick={() => props.setSelectedGroup(null)}>save</button>
                 </div>
-                <List />
+                <List
+                    onRemoveListItem={props.onRemoveListItem}
+                    group={group}
+                    onAddListItem={addListItem}
+                />
             </div>
         ) :
             <div className="groupContainer">
                 <div className="group">
-                    <h3 onClick={() => props.setSelectedGroupId(group.id)}>{group.title}</h3>
+                    <h3 onClick={() => props.setSelectedGroup(group)}>{group.title}</h3>
                     <button onClick={() => props.deleteGroup(group)}>Delete</button >
                 </div>
-                <List />
+                <List
+                    onRemoveListItem={props.onRemoveListItem}
+                    group={group}
+                    onAddListItem={addListItem}
+                />
             </div>
     })
 

@@ -4,19 +4,19 @@ import Groups from './Groups';
 
 function App() {
   const [groups, setGroups] = React.useState([])
-  const [selectedGroupId, setSelectedGroupId] = React.useState()
+  const [selectedGroup, setSelectedGroup] = React.useState()
 
   function addNewGroup() {
     const newGroup = {
       title: 'Untitled Group',
-      id: groups.length,
+      list: [],
     }
     setGroups(prevGroups => [newGroup, ...prevGroups])
-    setSelectedGroupId(newGroup.id)
+    setSelectedGroup(newGroup)
   }
 
-  function selectGroup(id) {
-    setSelectedGroupId(id)
+  function selectGroup(group) {
+    setSelectedGroup(group)
   }
 
   function deleteGroup(groupToRemove) {
@@ -25,12 +25,33 @@ function App() {
     })
   }
 
-  function handleGroupChange(e, groupId) {
-    e.preventDefault();
+  function handleTitleChange(groupToUpdate, newTitle) {
     setGroups(prevGroups => {
-      const groupToChange = prevGroups.find((group) => group.id === groupId)
-      groupToChange.title = e.target.value
-      return prevGroups
+      return prevGroups.map(group => {
+        return group === groupToUpdate ? { ...group, title: newTitle } : group
+      })
+    })
+  }
+
+  function handleAddListItem(groupToUpdate, newListItem) {
+    setGroups(prevGroups => {
+      return prevGroups.map(group => {
+        return group === groupToUpdate ? {
+          ...group,
+          list: [newListItem, ...group.list]
+        } : group
+      })
+    })
+  }
+
+  function handleRemoveListItem(groupToUpdate, itemToRemove) {
+    setGroups(prevGroups => {
+      return prevGroups.map(group => {
+        return group === groupToUpdate ? {
+          ...group,
+          list: group.list.filter(item => item !== itemToRemove)
+        } : group
+      })
     })
   }
 
@@ -38,10 +59,12 @@ function App() {
     <div className="App">
       <Groups
         deleteGroup={deleteGroup}
-        setSelectedGroupId={selectGroup}
-        selectedGroupId={selectedGroupId}
+        setSelectedGroup={selectGroup}
+        selectedGroup={selectedGroup}
         addNewGroup={addNewGroup}
-        changeTitle={handleGroupChange}
+        onChangeTitle={handleTitleChange}
+        onAddListItem={handleAddListItem}
+        onRemoveListItem={handleRemoveListItem}
         groups={groups}
       />
     </div>
