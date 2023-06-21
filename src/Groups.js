@@ -2,13 +2,12 @@ import React from "react"
 import List from "./List"
 
 export default function Groups(props) {
-    const [titleValue, setTitleValue] = React.useState('')
 
-    function addListItem(inputValue) {
+    function addListItem(group, inputValue) {
         const newListItem = {
             value: inputValue,
         }
-        props.onAddListItem(newListItem)
+        props.onAddListItem(group, newListItem)
     }
 
     function handleChangeTitle(e, group) {
@@ -24,10 +23,11 @@ export default function Groups(props) {
     }
 
     const groupElements = props.groups.map((group) => {
-        return group === props.selectedGroup ? (
+        return group.selected ? (
             <div className="groupContainer">
                 <div className="group">
                     <input
+                        value={group.title}
                         onKeyDown={onKeyDown}
                         onChange={(e) => handleChangeTitle(e, group)}
                     />

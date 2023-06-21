@@ -4,28 +4,34 @@ import Groups from './Groups';
 
 function App() {
   const [groups, setGroups] = React.useState([])
-  const [selectedGroup, setSelectedGroup] = React.useState()
+
 
   function addNewGroup() {
     const newGroup = {
       title: 'Untitled Group',
       list: [],
+      selected: true,
     }
     setGroups(prevGroups => [newGroup, ...prevGroups])
-    setSelectedGroup(newGroup)
   }
 
-  function selectGroup(group) {
-    setSelectedGroup(group)
+  function handleSelectedGroup(selectedGroup) {
+    setGroups(prevGroups => {
+      return prevGroups.map(group => {
+        return group === selectedGroup ? { ...group, selected: true } : { ...group, selected: false }
+      })
+    })
   }
 
   function deleteGroup(groupToRemove) {
+    console.log("delete Group")
     setGroups(prevGroups => {
       return prevGroups.filter(group => group !== groupToRemove)
     })
   }
 
   function handleTitleChange(groupToUpdate, newTitle) {
+    console.log("title change")
     setGroups(prevGroups => {
       return prevGroups.map(group => {
         return group === groupToUpdate ? { ...group, title: newTitle } : group
@@ -34,6 +40,7 @@ function App() {
   }
 
   function handleAddListItem(groupToUpdate, newListItem) {
+    console.log("add list item", groupToUpdate, newListItem)
     setGroups(prevGroups => {
       return prevGroups.map(group => {
         return group === groupToUpdate ? {
@@ -45,6 +52,7 @@ function App() {
   }
 
   function handleRemoveListItem(groupToUpdate, itemToRemove) {
+    console.log("remove list item")
     setGroups(prevGroups => {
       return prevGroups.map(group => {
         return group === groupToUpdate ? {
@@ -59,8 +67,7 @@ function App() {
     <div className="App">
       <Groups
         deleteGroup={deleteGroup}
-        setSelectedGroup={selectGroup}
-        selectedGroup={selectedGroup}
+        setSelectedGroup={handleSelectedGroup}
         addNewGroup={addNewGroup}
         onChangeTitle={handleTitleChange}
         onAddListItem={handleAddListItem}

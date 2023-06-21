@@ -6,6 +6,11 @@ export default function List(props){
     const {group, onAddListItem, onRemoveListItem} = props
     const [inputValue, setInputValue] = React.useState('')
 
+    function handleSubmit(e){
+        e.preventDefault()
+        handleAddListItem()
+    }
+
     function handleAddListItem(){
         onAddListItem(group, inputValue);
         setInputValue('')
@@ -29,7 +34,7 @@ export default function List(props){
 
     return (
         <div className="listContainer">
-                <form action="">
+                <form action="" onSubmit={handleSubmit}>
                     <input 
                     className="listInput"
                         value={inputValue}
@@ -38,7 +43,7 @@ export default function List(props){
                         }} 
                         type="text" 
                     />
-                    <button className="listItemSubmitButton" onClick={handleAddListItem}>+</button>
+                    <button className="listItemSubmitButton" type="submit">+</button>
                 </form>
                 {listItems}
         </div>
